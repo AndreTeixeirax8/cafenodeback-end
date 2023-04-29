@@ -106,4 +106,41 @@ router.post("/forgotPassword", (req, res) => {
   });
 });
 
+router.get("/get", (req, res) => {
+  var query =
+    "select id,name,email,contactNumber,status from user where role='user'";
+  connection.query(query, (err, results) => {
+    if (!err) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(500).json(err);
+    }
+  });
+});
+
+router.patch("/update", (req, res) => {
+  let user = req.body;
+  var query = "update user set status=? where id=?";
+  connection.query(query, [user.status, user.id], (err, results) => {
+    if (!err) {
+      if (results.affectedRows == 0) {
+        return res
+          .status(404)
+          .json({ message: "Usuario id informado não existe" });
+      }
+      return res
+        .status(200)
+        .json({ message: "Usuario atualizado com sucesso" });
+    } else {
+      return res.status(500).json(err);
+    }
+  });
+});
+
+router.get("./checkToken", (req, res) => {
+  return res.status(200).json({ message: "true" });
+});
+
+//router.post("/changePassword", (req, res) => {});
+
 module.exports = router;
