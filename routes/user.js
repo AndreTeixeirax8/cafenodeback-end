@@ -5,6 +5,8 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+var auth = require("../services/authentication");
+var checkRole = require("../services/checkRole");
 
 router.post("/signup", (req, res) => {
   let user = req.body;
@@ -106,7 +108,7 @@ router.post("/forgotPassword", (req, res) => {
   });
 });
 
-router.get("/get", (req, res) => {
+router.get("/get", auth.authenticateToken, (req, res) => {
   var query =
     "select id,name,email,contactNumber,status from user where role='user'";
   connection.query(query, (err, results) => {
@@ -118,7 +120,7 @@ router.get("/get", (req, res) => {
   });
 });
 
-router.patch("/update", (req, res) => {
+router.patch("/update", auth.authenticateToken, (req, res) => {
   let user = req.body;
   var query = "update user set status=? where id=?";
   connection.query(query, [user.status, user.id], (err, results) => {
@@ -137,7 +139,7 @@ router.patch("/update", (req, res) => {
   });
 });
 
-router.get("./checkToken", (req, res) => {
+router.get("./checkToken", auth.authenticateToken, (req, res) => {
   return res.status(200).json({ message: "true" });
 });
 
