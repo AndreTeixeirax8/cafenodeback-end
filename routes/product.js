@@ -119,4 +119,28 @@ router.delete(
   }
 );
 
+router.patch(
+  "/updateStatus",
+  auth.authenticateToken,
+  checkRole.checkRole,
+  (req, res, next) => {
+    let user = req.body;
+    var query = "update product set status=? where id =?";
+    connection.query(query, [user.status, user.id], (err, results) => {
+      if (!err) {
+        if (results.affectedRows == 0) {
+          return res
+            .status(404)
+            .json({ message: "Produto com o id informado não existe" });
+        }
+        return res
+          .status(200)
+          .json({ message: "Status do produto alterado com sucesso" });
+      } else {
+        return res.status(500).json(err);
+      }
+    });
+  }
+);
+
 module.exports = router;
