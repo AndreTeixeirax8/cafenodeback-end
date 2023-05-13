@@ -36,7 +36,7 @@ router.post("/generateReport", auth.authenticateToken, (req, res) => {
             }
             else
             {
-                pdf.create(results).toFile('./generated_pdf'+generatedUuid+".pdf",function(err,data){
+                pdf.create(results).toFile('./generated_pdf/'+generatedUuid+".pdf",function(err,data){
                     if(err){
                         console.log(err)
                         return res.status(500).json(err)
